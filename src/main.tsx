@@ -1,10 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { HashRouter } from 'react-router-dom'
 import './index.css'
-import Site from './Site'
+import SiteRouter from './SiteRouter'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Site />
+    <HashRouter>
+      <SiteRouter />
+    </HashRouter>
   </StrictMode>,
 )

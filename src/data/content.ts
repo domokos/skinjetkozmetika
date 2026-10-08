@@ -11,11 +11,11 @@ export const services = [
 ]
 
 export const concerns = [
-  { title: 'Megereszkedett arckontúr, lifting', methods: ['Fókuszált ultrahang (HIFU)', 'Rádiófrekvencia', 'Plazma, mikrotűs MezoPen'] },
+  { title: 'Megereszkedett arckontúr, lifting', methods: ['Fókuszált ultrahang (HIFU)', 'Rádiófrekvencia', 'Plazma, mikrotűs MezoPen'], fasciaLink: true },
   { title: 'Akné és hegek', methods: ['Mikrodermabrázió', 'Plazma és lézer', 'Oxigénes kezelés'] },
-  { title: 'Toka, lógó felkar', methods: ['Rádiófrekvencia', 'Vákuumos kezelés'] },
+  { title: 'Toka, lógó felkar', methods: ['Rádiófrekvencia', 'Vákuumos kezelés'], fasciaLink: true },
   { title: 'Stria, cellulit', methods: ['Rádiófrekvencia', 'Vákuumos kezelés'] },
-  { title: 'Szemkezelések', methods: ['Oxigénes feltöltés', 'Plazma és vákuum', 'D-Cool krioterápia'] },
+  { title: 'Szemkezelések', methods: ['Oxigénes feltöltés', 'Plazma és vákuum', 'D-Cool krioterápia'], fasciaLink: true },
 ]
 
 export const treatments = [
