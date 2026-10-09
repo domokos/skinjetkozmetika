@@ -1,0 +1,20 @@
+[Unit]
+Description=Skinjet internal static website
+Wants=network-online.target
+After=network-online.target
+RequiresMountsFor=/srv/media/www/skinjetkozmetika
+
+[Service]
+Type=simple
+RuntimeDirectory=nginx
+RuntimeDirectoryMode=0755
+ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/skinjet-internal.conf
+ExecStart=/usr/sbin/nginx -c /etc/nginx/skinjet-internal.conf -g "daemon off;"
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGQUIT
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
