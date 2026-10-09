@@ -28,14 +28,15 @@ Internal Rocky Linux deployment is documented in [deploy/README.md](deploy/READM
 
 ## Current Deployment
 
-The current deployment was built on `domaacer`, the local Linux workstation
-running VS Code, in `/home/doma/git/skinjetkozmetika`. The build commands were
-`npm ci`, `npm run lint`, and `npm run build`.
+The current deployment was built on a local Linux workstation running VS Code,
+from the repository checkout. The build commands were `npm ci`, `npm run lint`,
+and `npm run build`.
 
-The generated `dist/` files were copied over SSH to `ares.szilva13.com`, under
-`/srv/media/www/skinjetkozmetika/releases/`. Ares only serves those static files
+The generated `dist/` files were copied over SSH to the deployment server, under
+`/srv/media/www/skinjetkozmetika/releases/`. The server only serves those static files
 through Nginx; it does not build the site or run a Node.js application server.
-The internal test URL is <http://ares.szilva13.com:9000/>.
+The internal test URL is `http://<server-hostname>:9000/`; replace the hostname
+placeholder with your deployment server's internal DNS name.
 
 No separate build server or automated GitLab/GitHub runner is configured.
 Pushing a commit does not deploy it automatically; subsequent releases must be

@@ -1,8 +1,12 @@
 # Internal Rocky Linux Deployment
 
-Target: `rocky@ares` (`ares.szilva13.com`, `192.168.130.105`).
-Test URL: `http://ares.szilva13.com:9000/#/`.
-Only clients in `192.168.120.0/24` are allowed by Nginx. Requests from other
+Target: `<ssh-user>@<server-hostname>` on the Rocky Linux deployment server.
+Test URL: `http://<server-hostname>:9000/#/`.
+Replace `<ssh-user>`, `<server-hostname>`, `<server-ip>`, `<allowed-client-subnet>`,
+and `<public-domain>` with the values for your environment; do not use them
+literally in commands or configuration.
+
+Only clients in `<allowed-client-subnet>` are allowed by Nginx. Requests from other
 sources receive HTTP 403; this is an HTTP access restriction, not a network
 firewall. The standalone configuration binds only the server LAN IPv4 address.
 
@@ -17,16 +21,16 @@ Home Assistant access, IPFire forwarding and public DNS remain unchanged.
 
 ## Build And Install
 
-The current deployment was built on `domaacer`, the local Linux workstation
-running VS Code, from `/home/doma/git/skinjetkozmetika`. Its generated `dist/`
-files were copied over SSH to ares and installed under
-`/srv/media/www/skinjetkozmetika/releases/`. Ares only serves the generated static
+The current deployment was built on a local Linux workstation running VS Code,
+from the repository checkout. Its generated `dist/` files were copied over SSH
+to the deployment server and installed under
+`/srv/media/www/skinjetkozmetika/releases/`. The server only serves the generated static
 files through Nginx; it does not perform the build or run a Node.js application
 server.
 
 There is no separate build server or automated GitLab/GitHub runner configured.
 A pushed commit does not trigger deployment automatically. For subsequent
-releases, build on `domaacer` (or another machine with the required tools), then
+releases, build on the local workstation (or another machine with the required tools), then
 publish the output using the update procedure below.
 
 Build on a machine with supported Node.js, not on the production server:
@@ -37,10 +41,14 @@ npm run lint
 npm run build
 ```
 
-Install Rocky's `nginx` package on ares after inspecting the package transaction.
+Install Rocky's `nginx` package on the server after inspecting the package transaction.
 Install `nginx-internal.conf` as `/etc/nginx/skinjet-internal.conf` and
 `skinjet-nginx.service` as `/etc/systemd/system/skinjet-nginx.service`, owned by
 root with mode 0644.
+
+The checked-in configuration contains deployment-specific settings. Before
+using it on another server, review its `listen`, `server_name`, and `allow`
+directives for the server IP, internal hostname, public domain, and client subnet.
 
 Copy the contents of `dist/` into a new directory under
 `/srv/media/www/skinjetkozmetika/releases/<release-id>`, owned by root, with readable
@@ -69,12 +77,13 @@ changing it. Do not change SELinux port assignments blindly.
 
 From an allowed client, check the test URL, actual generated `/assets/` URLs,
 all hamburger destinations, page refresh, and the fascia treatment links.
-Use `http://192.168.130.105:9000/#/` if internal DNS resolves elsewhere.
+Use `http://<server-ip>:9000/#/` if internal DNS resolves elsewhere.
 Google Fonts and Unsplash photos still require browser internet access.
 
-On ares, check `systemctl status skinjet-nginx`, the numeric TCP listeners,
-Nginx access/error logs, and SELinux AVC denials. A request issued on ares
-using its `192.168.130.105` source address should return 403, demonstrating
+On the deployment server, check `systemctl status skinjet-nginx`, the numeric TCP
+listeners, Nginx access/error logs, and SELinux AVC denials. A request issued on
+the server using its own IP address should return 403 if that address is outside
+the allowed client subnet, demonstrating
 the source restriction. Preserve existing service listeners and verify their
 health against the pre-deployment baseline. No IPFire inter-zone rule is
 changed automatically if client connectivity is blocked.
@@ -89,4 +98,4 @@ deploying to active clients, so previously loaded HTML can still request them.
 
 For a first-deployment rollback, stop and disable only `skinjet-nginx.service`.
 Do not remove shared web-server packages, change existing services, or alter
-IPFire. HTTPS and `skinjetkozmetika.hu` public rollout are a separate phase.
+IPFire. HTTPS and `<public-domain>` public rollout are a separate phase.
